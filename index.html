@@ -9,8 +9,6 @@
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 <!-- Code -->
-<!-- Python(pyodide) -->
-<script defer src="https://cdn.jsdelivr.net/pyodide/v0.23.3/full/pyodide.js"></script>
 <!-- Lua(Fengari) -->
 <script src="https://unpkg.com/fengari-web/dist/fengari-web.js"></script>
 <!-- Ruby(opal) -->
@@ -25,7 +23,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <body class="bg-gray-900 text-gray-100 h-screen flex items-center justify-center p-6" x-data="Writing()">
   <div class="w-full max-w-4xl flex flex-col gap-4 bg-gray-800 p-6 rounded-2xl shadow-2xl">
-
+    <div class="text-center my-6" style="font-size: 6rem;">💻</div>
+ 
     <!-- Header -->
     <h1 class="text-3xl font-bold text-white text-center mb-4 border-b border-gray-700 pb-2">
       QR'S Online Compiler
@@ -35,7 +34,6 @@
               class="flex-1 p-2 bg-gray-700 text-gray-100 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
         <option value="Js">JavaScript</option>
         <option value="Ts">TypeScript</option>
-        <option value="Py">Python</option>
         <option value="Lua">Lua</option>
         <option value="Rb">Ruby</option>
         <option value="Md">Markdown</option>
@@ -63,7 +61,7 @@
       Run
     </button>
 
-    <!-- Output Box (JS/Python/Lua/Ruby) -->
+    <!-- Output Box (JS/Lua/Ruby) -->
     <div x-show="lan != 'Md'" class="w-full">
       <pre x-text="result"
            class="w-full h-96 p-4 bg-gray-900 border border-gray-700 rounded-lg font-mono text-green-400 overflow-auto shadow-inner"></pre>
@@ -89,9 +87,9 @@ function Writing() {
         name: "",
         logs: [],
         count: 10,
-        pyodide: null,
 
         async Run(){
+            this.logs = [];
             if(this.lan != "Md"){
                 let originalConsole = console.log;
                 console.log = (...args) => this.logs.push(args.join(''));
@@ -101,13 +99,6 @@ function Writing() {
                 if(this.lan == 'Js'){
                     eval(this.code);
                 }
-                else if(this.lan == "Py"){
-                    if(this.pyodide == null){
-                        this.pyodide =await loadPyodide()
-                    }
-
-                    let result = this.pyodide.runPython(this.code);
-                }
                 else if(this.lan == "Lua"){
                     fengari.load(this.code)({print: console.log });
                 }
@@ -115,13 +106,13 @@ function Writing() {
                     Opal.eval(this.code);
                 }
                 else if(this.lan == "Ts"){
-                const jsCode = ts.transpileModule(this.code, {compilerOption: {module: ts.ModuleKind.ESNext}}).outputText;
+                const jsCode = ts.transpileModule(this.code, {compilerOptions: {module: ts.ModuleKind.ESNext}}).outputText;
                 eval(jsCode);
                 }
-                
-
+        
                 // Display logs in the output box
                 this.result = this.logs.join('\n');
+                console.log(originalConsole);
             }
             else if(this.lan == "Md"){
                 this.result = marked.parse(this.code);
@@ -146,13 +137,10 @@ function Writing() {
         LanChange(){
             switch(this.lan){
                 case "Js": 
-                    this.code ='console.log("world from Jave Script!")';
+                    this.code ='console.log("Hello from Jave Script!")';
                     break;
                 case "Ts": 
                     this.code ='const message: string = "Hello from Type Script!";\nconsole.log(message);';
-                    break;
-                case "Py": 
-                    this.code ='print("Hello from Python!")';
                     break;
                 case "Lua": 
                     this.code ='print("Hello from Lua!")';
