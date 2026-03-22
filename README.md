@@ -151,8 +151,8 @@ Single file application. No build step. No npm. Open in any browser.
  
 ## Related Projects
  
-- [Athena](../Athena) — AI assistant also built with Alpine.js and Tailwind
-- [IDE](../IDE) — Desktop version of a multi-language code runner built in C#
+- [Athena]([../Athena](https://github.com/Darklord1234938/Athena)) — AI assistant also built with Alpine.js and Tailwind
+- [IDE]([../IDE](https://github.com/Darklord1234938/IDE)) — Desktop version of a multi-language code runner built in C#
  
 ---
  
