@@ -123,8 +123,8 @@ Single file application. No build step. No npm. Open in any browser.
 | Markdown rendering | ✅ Working |
 | Console capture | ✅ Working |
 | File download | ✅ Working |
+| Syntax highlighting | ✅ Working |
 | Error handling | 🔄 In progress |
-| Syntax highlighting | 📋 Planned |
 | More languages | 📋 Planned |
  
 ---
