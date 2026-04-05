@@ -1,0 +1,16 @@
+body[data-theme="other"] {
+    --bg: #120b10;
+    --text: #ffd1f2;
+
+    --keyword: #ff4fd8;
+    --string: #ffb86c;
+    --number: #00f5ff;
+    --comment: #6a5a6a;
+    --function: #a78bfa;
+    --variable: #ff5ea8;
+    --class: #ffe66d;
+    --operator: #ff4fd8;
+    --parameter: #ffcc99;
+    --property: #00ffa2;
+    --selection: #ff4fd8;
+}

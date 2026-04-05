@@ -1,0 +1,16 @@
+body[data-theme="bad"] {
+    --bg: #0a0000;
+    --text: #ffb3b3;
+    
+    --keyword: #ff2e4d;
+    --string: #ff7b3a;
+    --number: #ff4d6d;
+    --comment: #4a4a4a;
+    --function: #7aa2ff;
+    --variable: #ff5c5c;
+    --class: #d18cff;
+    --operator: #ff2e4d;
+    --parameter: #ffcc66;
+    --property: #a6ff4d;
+    --selection: #ff2e4d;
+}

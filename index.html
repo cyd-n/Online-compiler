@@ -29,17 +29,26 @@
 <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-ruby.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-markup.min.js"></script>
 
-<link rel="stylesheet" href="sif.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="bad.css">
+<link rel="stylesheet" href="good.css">
+<link rel="stylesheet" href="other.css">
 
 <!-- TailwindCSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
-<body class="bg-gray-900 text-gray-100 h-screen flex items-center justify-center p-6" x-data="Writing()">
+<body
+    x-data="Writing()"
+    :data-theme="theme"
+    class="bg-gray-900 text-gray-100 h-screen flex items-center justify-center p-6"
+>
+    
   <div class="w-full max-w-4xl flex flex-col gap-4 bg-gray-800 p-6 rounded-2xl shadow-2xl">
     <div class="text-center my-6" style="font-size: 6rem;">💻</div>
+    <div class="text-center my-6" style="font-size: 6rem;"> </div>
  
     <!-- Header -->
     <h1 class="text-3xl font-bold text-white text-center mb-4 border-b border-gray-700 pb-2">
-      QR'S Online Compiler
+      CYD-N Online Compiler
     </h1>
 
     <select x-model="lan" @change="LanChange()"
@@ -62,8 +71,31 @@
       </button>
     </div>
 
+    <!-- Theme Switcher -->
+    <div class="faction-toggle">
+        <div class="toggle-track">
+
+            <div class="toggle-thumb"
+                :class="theme"
+            ></div>
+
+            <button @click="theme = 'good'">
+                Good Guy
+            </button>
+
+            <button @click="theme = 'bad'">
+                Bad Guy
+            </button>
+
+            <button @click="theme = 'other'">
+                Other Guy
+            </button>
+
+        </div>
+    </div>
+
     <!-- Code Editor -->
-   <div class="relative w-full h-60" style="font: 14px/1.5 'Fira Code', monospace;">
+   <div class="editor w-full " style="font: 14px/1.5 'Fira Code', monospace;">
 
         <pre
             x-ref="pre"
@@ -114,6 +146,7 @@ function Writing() {
         lan: "Js",
         prismLang: "javascript",
         code: 'console.log("Hello world")',
+        theme: "good",
         result: "",
         name: "",
         logs: [],
@@ -214,7 +247,7 @@ function Writing() {
                     this.code ='# Hello Markdown\n- This is a **Markdown** editor\n- Live preview in the browser\n- Works with lists, **bold**, *italic*, \`code\`, and more`';
                     break;
             }
-        }
+        },
     }
 }
 </script>

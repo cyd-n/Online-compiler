@@ -1,0 +1,17 @@
+body[data-theme="good"] {
+    --bg: #071018;
+    --text: #b8d7ff;
+
+
+    --keyword: #7cc7ff;
+    --string: #8ef0c9;
+    --number: #a6bfff;
+    --comment: #6b7c93;
+    --function: #66d9ef;
+    --variable: #9effa1;
+    --class: #ffd166;
+    --operator: #7cc7ff;
+    --parameter: #c3f0ff;
+    --property: #a0ffd1;
+    --selection: #66d9ef;
+}
