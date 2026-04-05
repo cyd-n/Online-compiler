@@ -81,7 +81,8 @@
                 bg-transparent text-transparent caret-white
                 border border-gray-700 rounded-lg
                 resize-none overflow-auto outline-none"
-            style="font: inherit; margin: 0; padding: 16px; box-sizing: border-box;"
+            style="font: inherit; margin: 0; padding: 16px; box-sizing: border-box;"  
+            x-init="GetHighlight()"
         ></textarea>
 
     </div>
@@ -93,7 +94,7 @@
     </button>
 
     <!-- Output Box (JS/Lua/Ruby) -->
-    <div x-show="lan != 'Md'" class="w-full">
+    <div x-show="lan != 'Md'" class="w-full" >
       <pre x-text="result"
            class="w-full h-96 p-4 bg-gray-900 border border-gray-700 rounded-lg font-mono text-green-400 overflow-auto shadow-inner"></pre>
     </div>
@@ -113,7 +114,6 @@ function Writing() {
         lan: "Js",
         prismLang: "javascript",
         code: 'console.log("Hello world")',
-        highlight: '',
         result: "",
         name: "",
         logs: [],
@@ -185,11 +185,17 @@ function Writing() {
             window.URL.revokeObjectURL(url);  
         },
 
-        LanChange(){
+        async LanChange(){
+            await this.SwitchLan();
+            this.GetHighlight();
+        },
+
+        SwitchLan(){
             switch(this.lan){
                 case "Js": 
                     this.prismLang = "javascript";
                     this.code ='console.log("Hello from Jave Script!")';
+                    this.GetHighlight();
                     break;
                 case "Ts": 
                     this.prismLang = "typescript";
