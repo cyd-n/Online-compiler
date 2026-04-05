@@ -19,6 +19,18 @@
 <!-- Mark Down -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+<link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+
+<!-- Language support -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-javascript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-typescript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-lua.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-ruby.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-markup.min.js"></script>
+
+<link rel="stylesheet" href="sif.css">
+
 <!-- TailwindCSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
 <body class="bg-gray-900 text-gray-100 h-screen flex items-center justify-center p-6" x-data="Writing()">
@@ -51,9 +63,28 @@
     </div>
 
     <!-- Code Editor -->
-    <textarea x-model="code"
-              class="w-full h-60 p-4 bg-gray-900 border border-gray-700 rounded-lg font-mono text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none shadow-lg"
-              placeholder="Write your code here..."></textarea>
+   <div class="relative w-full h-60" style="font: 14px/1.5 'Fira Code', monospace;">
+
+        <pre
+            x-ref="pre"
+            aria-hidden="true"
+            class="absolute inset-0 m-0 p-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none rounded-lg"
+            style="font: inherit; margin: 0; padding: 16px; box-sizing: border-box;"
+        ><code x-ref="codeBlock" :class="'language-' + prismLang"></code></pre>
+
+        <textarea
+            x-model="code"
+            @input="GetHighlight()"
+            @scroll="$refs.pre.scrollTop = $event.target.scrollTop; $refs.pre.scrollLeft = $event.target.scrollLeft;"
+            spellcheck="false"
+            class="absolute inset-0 w-full h-full
+                bg-transparent text-transparent caret-white
+                border border-gray-700 rounded-lg
+                resize-none overflow-auto outline-none"
+            style="font: inherit; margin: 0; padding: 16px; box-sizing: border-box;"
+        ></textarea>
+
+    </div>
 
     <!-- Run Button -->
     <button @click="Run()"
@@ -76,17 +107,37 @@
   </div>
 </body>
 
-
-
 <script>
 function Writing() {
     return{
         lan: "Js",
+        prismLang: "javascript",
         code: 'console.log("Hello world")',
+        highlight: '',
         result: "",
         name: "",
         logs: [],
         count: 10,
+        tokens: {
+            keyword: /\b(break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|let|new|of|return|static|super|switch|this|throw|try|typeof|var|void|while|with|yield|async|await)\b/g,
+            string: /(["'`])(?:\\[\s\S]|(?!\1)[^\\])*\1/g,
+            number: /\b(\d+\.?\d*(?:e[+-]?\d+)?|0x[\da-f]+|0o[0-7]+|0b[01]+)\b/gi,
+            comment: /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)/g,
+            function: /\b([a-zA-Z_$][\w$]*)\s*(?=\()/g,
+            type: /\b(Array|Boolean|Date|Error|Function|Map|Math|Number|Object|Promise|Proxy|RegExp|Set|String|Symbol|WeakMap|WeakSet|Int8Array|Uint8Array|Float32Array|Float64Array)\b/g,
+            operator: /(\+\+|--|&&|\|\||[+\-*/%&|^~!<>=?:]=?|=>)/g,
+            parameter: /(?<=function[\s\w$]*\(|(?:[\w$]+|\))\s*=>\s*\(?)[\s,]*([a-zA-Z_$][\w$]*)/g,
+            property: /(?<=\.)\s*([a-zA-Z_$][\w$]*)\b(?!\s*\()/g,
+            punctuation: /([{}[\]();,.])/g,
+            decorator: /(@[a-zA-Z_$][\w$]*)/g,
+            builtin: /\b(console|window|document|globalThis|process|module|exports|require|undefined|null|true|false|NaN|Infinity|arguments)\b/g,
+            regex: /(?<![)\w$\]'"`])(\/((?![*+?])(?:[^/\\\n[]|\\.|\[(?:[^\]\\]|\\.)*])+)\/[gimsuy]*)/g,
+        },
+
+        GetHighlight() {
+            this.$refs.codeBlock.textContent = this.code + "\n"; // 👈 important!
+            Prism.highlightElement(this.$refs.codeBlock);
+        },
 
         async Run(){
             this.logs = [];
@@ -120,8 +171,8 @@ function Writing() {
         },
     
         Download(){
-             var file = new Blob([this.code], {type: this.lan.toLowerCase()});
-             var a = document.createElement("a"),
+            var file = new Blob([this.code], {type: this.lan.toLowerCase()});
+            var a = document.createElement("a"),
                 url = URL.createObjectURL(file);
             a.href = url;
             if(this.name.trim() == '')
@@ -137,18 +188,23 @@ function Writing() {
         LanChange(){
             switch(this.lan){
                 case "Js": 
+                    this.prismLang = "javascript";
                     this.code ='console.log("Hello from Jave Script!")';
                     break;
                 case "Ts": 
+                    this.prismLang = "typescript";
                     this.code ='const message: string = "Hello from Type Script!";\nconsole.log(message);';
                     break;
                 case "Lua": 
+                    this.prismLang = "lua";
                     this.code ='print("Hello from Lua!")';
                     break;
                 case "Rb": 
+                    this.prismLang = "ruby";
                     this.code ='puts "Hello from Ruby!";';
                     break;
                 case "Md": 
+                    this.prismLang = "markup";
                     this.code ='# Hello Markdown\n- This is a **Markdown** editor\n- Live preview in the browser\n- Works with lists, **bold**, *italic*, \`code\`, and more`';
                     break;
             }
