@@ -29,15 +29,16 @@
 <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-ruby.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-markup.min.js"></script>
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="bad.css">
-<link rel="stylesheet" href="good.css">
-<link rel="stylesheet" href="other.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/bad.css">
+<link rel="stylesheet" href="css/good.css">
+<link rel="stylesheet" href="css/other.css">
 
 <!-- TailwindCSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
 <body
     x-data="Writing()"
+    x-init="Init()"
     :data-theme="theme"
     class="bg-gray-900 text-gray-100 h-screen flex items-center justify-center p-6"
 >
@@ -167,8 +168,12 @@ function Writing() {
             regex: /(?<![)\w$\]'"`])(\/((?![*+?])(?:[^/\\\n[]|\\.|\[(?:[^\]\\]|\\.)*])+)\/[gimsuy]*)/g,
         },
 
+        Init() {
+            if (localStorage.getItem(this.lan)) { this.code = localStorage.getItem(this.lan);} 
+        },
+
         GetHighlight() {
-            this.$refs.codeBlock.textContent = this.code + "\n"; // 👈 important!
+            this.$refs.codeBlock.textContent = this.code + "\n"; 
             Prism.highlightElement(this.$refs.codeBlock);
         },
 
@@ -190,8 +195,8 @@ function Writing() {
                     Opal.eval(this.code);
                 }
                 else if(this.lan == "Ts"){
-                const jsCode = ts.transpileModule(this.code, {compilerOptions: {module: ts.ModuleKind.ESNext}}).outputText;
-                eval(jsCode);
+                    const jsCode = ts.transpileModule(this.code, {compilerOptions: {module: ts.ModuleKind.ESNext}}).outputText;
+                    eval(jsCode);
                 }
         
                 // Display logs in the output box
@@ -201,6 +206,10 @@ function Writing() {
             else if(this.lan == "Md"){
                 this.result = marked.parse(this.code);
             }
+
+            localStorage.setItem(this.lan, this.code);
+
+            localStorage.setItem("console", this.EncodeP1(this.result));
         },
     
         Download(){
@@ -220,6 +229,9 @@ function Writing() {
 
         async LanChange(){
             await this.SwitchLan();
+
+            if (localStorage.getItem(this.lan)) { this.code = localStorage.getItem(this.lan);} 
+
             this.GetHighlight();
         },
 
